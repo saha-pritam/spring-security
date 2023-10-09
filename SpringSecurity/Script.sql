@@ -1,0 +1,23 @@
+create database springsecurity;
+use springsecurity;
+CREATE TABLE USERS (
+    USERNAME VARCHAR(128) PRIMARY KEY,
+    PASSWORD VARCHAR(128) NOT NULL,
+    ENABLED CHAR(1) CHECK (ENABLED IN ('Y','N') ) NOT NULL
+);
+
+
+CREATE TABLE AUTHORITIES (
+    USERNAME VARCHAR(128) NOT NULL,
+    AUTHORITY VARCHAR(128) NOT NULL
+);
+ALTER TABLE AUTHORITIES ADD CONSTRAINT AUTHORITIES_UNIQUE UNIQUE (USERNAME, AUTHORITY);
+ALTER TABLE AUTHORITIES ADD CONSTRAINT AUTHORITIES_FK1 FOREIGN KEY (USERNAME) REFERENCES USERS (USERNAME);
+
+insert into USERS values('pritam','pritam','Y');
+insert into USERS values('basudev','basudev','Y');
+insert into USERS values('saurav','saurav','Y');
+
+insert into AUTHORITIES values('pritam','ROLE_USER');
+insert into AUTHORITIES values('basudev','ROLE_ADMIN');
+insert into AUTHORITIES values('saurav','ROLE_SUPERADMIN');

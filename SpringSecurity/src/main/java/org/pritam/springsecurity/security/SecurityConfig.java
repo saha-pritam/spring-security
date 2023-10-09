@@ -1,5 +1,8 @@
 package org.pritam.springsecurity.security;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,15 +14,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SuppressWarnings("deprecation")
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	private DataSource dataSource;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-		authenticationManagerBuilder.inMemoryAuthentication().withUser("pritam").password("pritam").roles("USER").and()
-		.withUser("basudev").password("basudev").roles("ADMIN").and()
-		.withUser("saurav").password("saurav").roles("SUPERADMIN");
+		authenticationManagerBuilder.jdbcAuthentication().dataSource(dataSource);
 	}
-	
-	
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -28,8 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/user_admin/**").hasAnyRole("USER","ADMIN","SUPERADMIN")
 		.anyRequest().permitAll().and().formLogin();
 	}
-
-
 
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
