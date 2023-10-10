@@ -2,6 +2,7 @@ package org.pritam.springsecurity.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,14 +25,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/admin/**").hasAnyRole("ADMIN","SUPERADMIN")
-		.antMatchers("/user/**").hasAnyRole("USER","SUPERADMIN")
-		.antMatchers("/user_admin/**").hasAnyRole("USER","ADMIN","SUPERADMIN")
-		.anyRequest().permitAll().and().formLogin();
+		http.authorizeRequests().antMatchers("/api/**").authenticated()
+		.antMatchers("/generateToken").permitAll()
+		.and().formLogin()
+		.and().csrf().disable();
 	}
 
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
 	}
+
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		// TODO Auto-generated method stub
+		return super.authenticationManagerBean();
+	}
+	
+	
 }
