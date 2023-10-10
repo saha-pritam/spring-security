@@ -1,5 +1,6 @@
 package org.pritam.springsecurity.security;
 
+import org.pritam.springsecurity.jwt.JWTAuthenticationEntryPoint;
 import org.pritam.springsecurity.jwt.JWTConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private JWTConfig jwtConfig;
+	
+	@Autowired
+	private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -36,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.and().csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtConfig, UsernamePasswordAuthenticationFilter.class);
+		http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
 	}
 
 	@Bean
